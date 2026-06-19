@@ -9,7 +9,9 @@ function sortByMany(array $items, array $comparisons): array
             $comparison = normalize($comparison);
             $prop = $comparison[0] ?? null;
             $direction = strtolower((string) ($comparison[1] ?? 'asc'));
-            $result = dataGet($a, $prop) <=> dataGet($b, $prop);
+            $result = (! is_string($prop) && is_callable($prop))
+                ? $prop($a, $b)
+                : dataGet($a, $prop) <=> dataGet($b, $prop);
 
             if ($result !== 0) {
                 return $direction === 'desc' ? -$result : $result;
